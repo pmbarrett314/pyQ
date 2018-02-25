@@ -14,6 +14,8 @@ def authenticate(email, password, client_id, client_secret):
         message = "Either an email/password combination or a client id/secret combination is needed"
         raise NoAuthenticationMethodException(message)
 
+    # TODO: This should raise if authentication info isn't correct
+
     return token_dict
 
 

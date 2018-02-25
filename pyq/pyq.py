@@ -46,20 +46,22 @@ class PasswordPromptAction(argparse.Action):
 
 def main():
     parser = argparse.ArgumentParser(description="Send a notification to your 5Q.")
+
+    auth_group = parser.add_argument_group("Authentication info")
+    auth_group.add_argument("--client_id", dest='client_id', default=os.getenv("PYQ_CLIENT_ID"),
+                            help="client id")
+    auth_group.add_argument("--client_secret", dest='client_secret', default=os.getenv("PYQ_CLIENT_SECRET"),
+                            help="client secret")
+    auth_group.add_argument("--email", dest='email', default=os.getenv("PYQ_EMAIL"),
+                            help="email")
+    auth_group.add_argument("--password", dest="password", default=os.getenv("PYQ_PASSWORD"), nargs='?',
+                            action=PasswordPromptAction,
+                            help="password")
+
     subparsers = parser.add_subparsers()
 
     auth_parser = subparsers.add_parser('auth', help='auth help')
     auth_parser.set_defaults(func=auth)
-
-    auth_parser.add_argument("--client_id", dest='client_id', default=os.getenv("PYQ_CLIENT_ID"),
-                             help="client id")
-    auth_parser.add_argument("--client_secret", dest='client_secret', default=os.getenv("PYQ_CLIENT_SECRET"),
-                             help="client secret")
-    auth_parser.add_argument("--email", dest='email', default=os.getenv("PYQ_EMAIL"),
-                             help="email")
-    auth_parser.add_argument("--password", dest="password", default=os.getenv("PYQ_PASSWORD"), nargs='?',
-                             action=PasswordPromptAction,
-                             help="password")
 
     signal_parser = subparsers.add_parser('signal', help='signal help')
     signal_parser.set_defaults(func=signal)

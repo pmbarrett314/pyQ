@@ -1,9 +1,20 @@
 import argparse
 import getpass
+import json
 import os
 import pprint
+import requests
 
 from authentication import authenticate
+
+
+def make_headers(access_token, post=False):
+    headers = {
+        "Authorization": "Bearer {access_token}".format(access_token=access_token),
+    }
+    if post:
+        headers["Content-Type"] = "application/json"
+    return headers
 
 
 def auth(args):
@@ -13,6 +24,16 @@ def auth(args):
 
 def signal(args):
     print("hello signal")
+
+
+def device_definitions(args):
+    token_dict = authenticate(args.email, args.password, args.client_id, args.client_secret)
+
+    url = "https://q.daskeyboard.com/api/1.0/device_definitions"
+    headers = make_headers(token_dict["access_token"])
+
+    r = requests.get(url, headers=headers)
+    pprint.pprint(json.loads(r.content))
 
 
 class PasswordPromptAction(argparse.Action):
@@ -42,6 +63,9 @@ def main():
 
     signal_parser = subparsers.add_parser('signal', help='signal help')
     signal_parser.set_defaults(func=signal)
+
+    device_definition_parser = subparsers.add_parser('device_definitions', help='device_definitions help')
+    device_definition_parser.set_defaults(func=device_definitions)
 
     args = parser.parse_args()
     args.func(args)

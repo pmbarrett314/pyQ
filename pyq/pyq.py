@@ -73,8 +73,8 @@ def main():
     auth_parser = subparsers.add_parser('auth', help='auth help')
     auth_parser.set_defaults(func=auth)
 
-    signal_parser = subparsers.add_parser('signal', help='signal help')
-    signal_parser.set_defaults(func=signal)
+    signals_parser = subparsers.add_parser('signals', help='signal help')
+    signals_parser.set_defaults(func=simple_get, endpoint="signals")
 
     device_definitions_parser = subparsers.add_parser('device_definitions', help='device_definitions help')
     device_definitions_parser.set_defaults(func=simple_get, endpoint="device_definitions")

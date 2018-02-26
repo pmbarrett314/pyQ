@@ -22,10 +22,6 @@ def auth(args):
     pprint.pprint(token_dict)
 
 
-def signal(args):
-    print("hello signal")
-
-
 def simple_get(args):
     token_dict = authenticate(args.email, args.password, args.client_id, args.client_secret)
 
@@ -41,6 +37,20 @@ def get_with_pid(args):
 
     url = "https://q.daskeyboard.com/api/1.0/{pid}/{endpoint}".format(pid=args.pid, endpoint=args.endpoint)
     headers = make_headers(token_dict["access_token"])
+
+    r = requests.get(url, headers=headers)
+    pprint.pprint(json.loads(r.content))
+
+
+def get_signals(args):
+    token_dict = authenticate(args.email, args.password, args.client_id, args.client_secret)
+
+    if args.after is not None:
+        url = "https://q.daskeyboard.com/api/1.0/signals/after/{after}".format(after=args.after)
+    else:
+        url = "https://q.daskeyboard.com/api/1.0/signals"
+    headers = make_headers(token_dict["access_token"])
+    params = {"pid": args.pid}
 
     r = requests.get(url, headers=headers)
     pprint.pprint(json.loads(r.content))
@@ -73,9 +83,6 @@ def main():
     auth_parser = subparsers.add_parser('auth', help='auth help')
     auth_parser.set_defaults(func=auth)
 
-    signals_parser = subparsers.add_parser('signals', help='signal help')
-    signals_parser.set_defaults(func=simple_get, endpoint="signals")
-
     device_definitions_parser = subparsers.add_parser('device_definitions', help='device_definitions help')
     device_definitions_parser.set_defaults(func=simple_get, endpoint="device_definitions")
 
@@ -94,6 +101,13 @@ def main():
     effects_parser.set_defaults(func=get_with_pid, endpoint="effects")
     effects_parser.add_argument("--pid", dest="pid", required=True,
                                 help="pid")
+
+    signals_parser = subparsers.add_parser('signals', help='signal help')
+    signals_parser.set_defaults(func=get_signals, endpoint="signals")
+    signals_parser.add_argument("--pid", dest="pid",
+                                help="pid")
+    signals_parser.add_argument("--after", dest="after",
+                                help="after")
 
     args = parser.parse_args()
     args.func(args)

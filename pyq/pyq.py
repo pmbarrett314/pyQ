@@ -67,6 +67,17 @@ def zones(args):
     pprint.pprint(json.loads(r.content))
 
 
+def effects(args):
+    token_dict = authenticate(args.email, args.password, args.client_id, args.client_secret)
+    pid = args.pid
+
+    url = "https://q.daskeyboard.com/api/1.0/{pid}/effects".format(pid=pid)
+    headers = make_headers(token_dict["access_token"])
+
+    r = requests.get(url, headers=headers)
+    pprint.pprint(json.loads(r.content))
+
+
 class PasswordPromptAction(argparse.Action):
     def __call__(self, parser, args, value, option_string=None):
         if value is not None:
@@ -103,13 +114,18 @@ def main():
     devices_parser = subparsers.add_parser('devices', help='devices help')
     devices_parser.set_defaults(func=devices)
 
-    colors_parser = subparsers.add_parser('colors', help='devices help')
+    colors_parser = subparsers.add_parser('colors', help='colors help')
     colors_parser.set_defaults(func=colors)
 
     zones_parser = subparsers.add_parser('zones', help='zones help')
     zones_parser.set_defaults(func=zones)
     zones_parser.add_argument("--pid", dest="pid", required=True,
                               help="pid")
+
+    effects_parser = subparsers.add_parser('effects', help='effects help')
+    effects_parser.set_defaults(func=effects)
+    effects_parser.add_argument("--pid", dest="pid", required=True,
+                                help="pid")
 
     args = parser.parse_args()
     args.func(args)

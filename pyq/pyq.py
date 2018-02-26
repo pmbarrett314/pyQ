@@ -26,52 +26,20 @@ def signal(args):
     print("hello signal")
 
 
-def device_definitions(args):
+def simple_get(args):
     token_dict = authenticate(args.email, args.password, args.client_id, args.client_secret)
 
-    url = "https://q.daskeyboard.com/api/1.0/device_definitions"
+    url = "https://q.daskeyboard.com/api/1.0/{endpoint}".format(endpoint=args.endpoint)
     headers = make_headers(token_dict["access_token"])
 
     r = requests.get(url, headers=headers)
     pprint.pprint(json.loads(r.content))
 
 
-def devices(args):
+def get_with_pid(args):
     token_dict = authenticate(args.email, args.password, args.client_id, args.client_secret)
 
-    url = "https://q.daskeyboard.com/api/1.0/devices"
-    headers = make_headers(token_dict["access_token"])
-
-    r = requests.get(url, headers=headers)
-    pprint.pprint(json.loads(r.content))
-
-
-def colors(args):
-    token_dict = authenticate(args.email, args.password, args.client_id, args.client_secret)
-
-    url = "https://q.daskeyboard.com/api/1.0/colors"
-    headers = make_headers(token_dict["access_token"])
-
-    r = requests.get(url, headers=headers)
-    pprint.pprint(json.loads(r.content))
-
-
-def zones(args):
-    token_dict = authenticate(args.email, args.password, args.client_id, args.client_secret)
-    pid = args.pid
-
-    url = "https://q.daskeyboard.com/api/1.0/{pid}/zones".format(pid=pid)
-    headers = make_headers(token_dict["access_token"])
-
-    r = requests.get(url, headers=headers)
-    pprint.pprint(json.loads(r.content))
-
-
-def effects(args):
-    token_dict = authenticate(args.email, args.password, args.client_id, args.client_secret)
-    pid = args.pid
-
-    url = "https://q.daskeyboard.com/api/1.0/{pid}/effects".format(pid=pid)
+    url = "https://q.daskeyboard.com/api/1.0/{pid}/{endpoint}".format(pid=args.pid, endpoint=args.endpoint)
     headers = make_headers(token_dict["access_token"])
 
     r = requests.get(url, headers=headers)
@@ -108,22 +76,22 @@ def main():
     signal_parser = subparsers.add_parser('signal', help='signal help')
     signal_parser.set_defaults(func=signal)
 
-    device_definition_parser = subparsers.add_parser('device_definitions', help='device_definitions help')
-    device_definition_parser.set_defaults(func=device_definitions)
+    device_definitions_parser = subparsers.add_parser('device_definitions', help='device_definitions help')
+    device_definitions_parser.set_defaults(func=simple_get, endpoint="device_definitions")
 
     devices_parser = subparsers.add_parser('devices', help='devices help')
-    devices_parser.set_defaults(func=devices)
+    devices_parser.set_defaults(func=simple_get, endpoint="devices")
 
     colors_parser = subparsers.add_parser('colors', help='colors help')
-    colors_parser.set_defaults(func=colors)
+    colors_parser.set_defaults(func=simple_get, endpoint="colors")
 
     zones_parser = subparsers.add_parser('zones', help='zones help')
-    zones_parser.set_defaults(func=zones)
+    zones_parser.set_defaults(func=get_with_pid, endpoint="zones")
     zones_parser.add_argument("--pid", dest="pid", required=True,
                               help="pid")
 
     effects_parser = subparsers.add_parser('effects', help='effects help')
-    effects_parser.set_defaults(func=effects)
+    effects_parser.set_defaults(func=get_with_pid, endpoint="effects")
     effects_parser.add_argument("--pid", dest="pid", required=True,
                                 help="pid")
 

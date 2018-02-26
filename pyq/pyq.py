@@ -55,6 +55,7 @@ def colors(args):
     r = requests.get(url, headers=headers)
     pprint.pprint(json.loads(r.content))
 
+
 class PasswordPromptAction(argparse.Action):
     def __call__(self, parser, args, value, option_string=None):
         if value is not None:

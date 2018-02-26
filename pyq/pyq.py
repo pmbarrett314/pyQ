@@ -35,6 +35,15 @@ def device_definitions(args):
     r = requests.get(url, headers=headers)
     pprint.pprint(json.loads(r.content))
 
+def devices(args):
+    token_dict = authenticate(args.email, args.password, args.client_id, args.client_secret)
+
+    url = "https://q.daskeyboard.com/api/1.0/devices"
+    headers = make_headers(token_dict["access_token"])
+
+    r = requests.get(url, headers=headers)
+    pprint.pprint(json.loads(r.content))
+
 
 class PasswordPromptAction(argparse.Action):
     def __call__(self, parser, args, value, option_string=None):
@@ -68,6 +77,9 @@ def main():
 
     device_definition_parser = subparsers.add_parser('device_definitions', help='device_definitions help')
     device_definition_parser.set_defaults(func=device_definitions)
+
+    devices_parser=subparsers.add_parser('devices', help='devices help')
+    devices_parser.set_defaults(func=devices)
 
     args = parser.parse_args()
     args.func(args)

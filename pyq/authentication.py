@@ -41,7 +41,10 @@ def get_token(data):
     url = "https://q.daskeyboard.com/oauth/1.4/token"
     headers = {"Content-Type": "application/json"}
     r = requests.post(url, json=data, headers=headers)
-    return json.loads(r.content)
+    try:
+        return json.loads(r.content)
+    except TypeError:
+        return json.loads(r.content.decode('utf-8'))
 
 
 class NoAuthenticationMethodException(Exception):

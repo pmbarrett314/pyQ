@@ -5,7 +5,7 @@ import os
 import pprint
 import requests
 
-from authentication import authenticate
+from .authentication import authenticate
 
 
 def make_headers(access_token, post=False):
@@ -64,7 +64,7 @@ class PasswordPromptAction(argparse.Action):
             setattr(args, self.dest, getpass.getpass())
 
 
-def main():
+def main(_args=None):
     parser = argparse.ArgumentParser(description="Send a notification to your 5Q.")
 
     auth_group = parser.add_argument_group("Authentication info")
@@ -109,7 +109,7 @@ def main():
     signals_parser.add_argument("--after", dest="after",
                                 help="after")
 
-    args = parser.parse_args()
+    args = parser.parse_args(_args)
     return args.func(args)
 
 

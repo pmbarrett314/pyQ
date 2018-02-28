@@ -19,7 +19,7 @@ def make_headers(access_token, post=False):
 
 def auth(args):
     token_dict = authenticate(args.email, args.password, args.client_id, args.client_secret)
-    pprint.pprint(token_dict)
+    return token_dict
 
 
 def simple_get(args):
@@ -29,7 +29,7 @@ def simple_get(args):
     headers = make_headers(token_dict["access_token"])
 
     r = requests.get(url, headers=headers)
-    pprint.pprint(json.loads(r.content))
+    return json.loads(r.content)
 
 
 def get_with_pid(args):
@@ -39,7 +39,7 @@ def get_with_pid(args):
     headers = make_headers(token_dict["access_token"])
 
     r = requests.get(url, headers=headers)
-    pprint.pprint(json.loads(r.content))
+    return json.loads(r.content)
 
 
 def get_signals(args):
@@ -53,7 +53,7 @@ def get_signals(args):
     params = {"pid": args.pid}
 
     r = requests.get(url, headers=headers)
-    pprint.pprint(json.loads(r.content))
+    return json.loads(r.content)
 
 
 class PasswordPromptAction(argparse.Action):
@@ -110,8 +110,8 @@ def main():
                                 help="after")
 
     args = parser.parse_args()
-    args.func(args)
+    return args.func(args)
 
 
 if __name__ == '__main__':
-    main()
+    pprint.pprint(main())

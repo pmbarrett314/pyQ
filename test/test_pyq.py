@@ -1,3 +1,8 @@
+try:
+    from unittest.mock import patch
+except ImportError:
+    from mock import patch
+
 import os
 import pytest
 
@@ -42,6 +47,19 @@ def test_password_auth():
     password = os.environ.get("PYQ_PASSWORD")
     with CleanEnv(["PYQ_CLIENT_ID", "PYQ_CLIENT_SECRET", "PYQ_PASSWORD", "PYQ_EMAIL"]):
         key_dict = main(["--email", email, "--password", password, "auth"])
+    assert "access_token" in key_dict
+    assert "refresh_token" in key_dict
+    assert "user_id" in key_dict
+
+
+@patch("getpass.getpass")
+def test_interactive_auth(getpass):
+    email = os.environ.get("PYQ_EMAIL")
+    password = os.environ.get("PYQ_PASSWORD")
+    getpass.return_value = password
+
+    with CleanEnv(["PYQ_CLIENT_ID", "PYQ_CLIENT_SECRET", "PYQ_PASSWORD", "PYQ_EMAIL"]):
+        key_dict = main(["--password", "--email", email, "auth"])
     assert "access_token" in key_dict
     assert "refresh_token" in key_dict
     assert "user_id" in key_dict

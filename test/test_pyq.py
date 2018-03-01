@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 try:
     from unittest.mock import patch
 except ImportError:

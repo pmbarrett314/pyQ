@@ -70,6 +70,11 @@ class PasswordPromptAction(argparse.Action):
             setattr(args, self.dest, getpass.getpass())
 
 
+def __test(args):
+    auth(args)
+    return 0
+
+
 def main(_args=None):
     parser = argparse.ArgumentParser(description="Send a notification to your 5Q.")
 
@@ -85,6 +90,9 @@ def main(_args=None):
                             help="password")
 
     subparsers = parser.add_subparsers()
+
+    test_parser = subparsers.add_parser("_test", help=argparse.SUPPRESS)
+    test_parser.set_defaults(func=__test)
 
     auth_parser = subparsers.add_parser('auth', help='auth help')
     auth_parser.set_defaults(func=auth)

@@ -4,8 +4,14 @@ import json
 import os
 import pprint
 import requests
+import imp
 
-from .authentication import authenticate
+try:
+    from .authentication import authenticate
+except ImportError:
+    file = os.path.join(os.path.dirname(__file__), "authentication.py")
+    authentication = imp.load_source("pyq.authentication", file)
+    authenticate = authentication.authenticate
 
 
 def make_headers(access_token, post=False):
